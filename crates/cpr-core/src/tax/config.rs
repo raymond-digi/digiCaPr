@@ -94,10 +94,15 @@ fn resolve_config_path(year: i32) -> PathBuf {
     }
     
     // 2. Bundled resources (default configs)
+    // Check multiple paths to handle both dev mode and production builds.
+    // In production, Tauri may place bundled resources under "_up_" when the
+    // source path contains ".." (e.g., "../config/*" -> "_up_/config/").
     let bundled_paths = [
         PathBuf::from("config").join(&filename),
         PathBuf::from("../config").join(&filename),
         PathBuf::from("../../config").join(&filename),
+        PathBuf::from("_up_/config").join(&filename),
+        PathBuf::from("../_up_/config").join(&filename),
     ];
     
     for path in &bundled_paths {

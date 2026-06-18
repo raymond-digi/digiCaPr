@@ -253,6 +253,43 @@ pub async fn update_personal_amount(
     })
 }
 
+/// Resolve the config directory path, checking multiple locations
+/// Handles both dev mode and production builds (including _up_ resource paths)
+fn resolve_config_dir() -> Option<std::path::PathBuf> {
+    let candidates = [
+        std::path::PathBuf::from("config"),
+        std::path::PathBuf::from("../config"),
+        std::path::PathBuf::from("../../config"),
+        std::path::PathBuf::from("_up_/config"),
+        std::path::PathBuf::from("../_up_/config"),
+    ];
+    
+    for path in &candidates {
+        if path.exists() {
+            return Some(path.clone());
+        }
+    }
+    None
+}
+
+/// Resolve the config directory path using Tauri's resource_dir (for commands with AppHandle)
+fn resolve_config_dir_with_app(app: &AppHandle) -> Option<std::path::PathBuf> {
+    if let Some(resource_dir) = app.path_resolver().resource_dir() {
+        // Try direct path first (correct with tuple resource mapping)
+        let direct = resource_dir.join("config");
+        if direct.exists() {
+            return Some(direct);
+        }
+        // Fallback: _up_ path (when resources use ../ prefix without tuple mapping)
+        let up_path = resource_dir.join("_up_/config");
+        if up_path.exists() {
+            return Some(up_path);
+        }
+    }
+    // Fallback to filesystem paths (dev mode)
+    resolve_config_dir()
+}
+
 /// Get available tax years from config files
 #[tauri::command]
 pub async fn get_available_tax_years(app: AppHandle) -> Result<Vec<i32>, CommandError> {
@@ -261,21 +298,10 @@ pub async fn get_available_tax_years(app: AppHandle) -> Result<Vec<i32>, Command
     
     let mut years = HashSet::new();
     
-    // Resolve config directory path - try resource path first, fallback to dev path
-    let config_dir = app.path_resolver()
-        .resource_dir()
-        .and_then(|resource_dir| Some(resource_dir.join("config")))
-        .filter(|path| path.exists())
-        .unwrap_or_else(|| {
-            // In dev mode, we're running from src-tauri, so config is at ../config
-            let dev_path = std::path::PathBuf::from("../config");
-            if dev_path.exists() {
-                dev_path
-            } else {
-                // Last resort fallback
-                std::path::PathBuf::from("config")
-            }
-        });
+    let config_dir = resolve_config_dir_with_app(&app)
+        .ok_or_else(|| CommandError::new(
+            "Config directory not found. Please ensure the config/ directory exists."
+        ))?;
     
     let entries = fs::read_dir(&config_dir)
         .map_err(|e| CommandError::new(&format!("Failed to read config directory at {:?}: {}", config_dir, e)))?;
@@ -487,13 +513,8 @@ fn get_latest_tax_year() -> Result<i32, CommandError> {
     use std::fs;
     use std::collections::HashSet;
     
-    let config_dir = std::path::PathBuf::from("../config");
-    if !config_dir.exists() {
-        let config_dir = std::path::PathBuf::from("config");
-        if !config_dir.exists() {
-            return Err(CommandError::new("Config directory not found"));
-        }
-    }
+    let config_dir = resolve_config_dir()
+        .ok_or_else(|| CommandError::new("Config directory not found"))?;
     
     let mut years = HashSet::new();
     let entries = fs::read_dir(&config_dir)
