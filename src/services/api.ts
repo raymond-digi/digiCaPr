@@ -281,12 +281,6 @@ export const reportsApi = {
   generateT4: (employeeId: number, year: number, outputPath: string) =>
     invoke<string>('generate_t4', { employeeId, year, outputPath }),
   
-  generateT4a: (employeeId: number, year: number, outputPath: string) =>
-    invoke<string>('generate_t4a', { employeeId, year, outputPath }),
-  
-  generateT5: (employeeId: number, year: number, outputPath: string) =>
-    invoke<string>('generate_t5', { employeeId, year, outputPath }),
-  
   exportPayrollCsv: (year: number, outputPath: string) =>
     invoke<string>('export_payroll_csv', { year, outputPath }),
   

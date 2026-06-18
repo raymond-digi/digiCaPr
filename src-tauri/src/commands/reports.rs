@@ -325,79 +325,6 @@ pub async fn generate_t4(
     })
 }
 
-/// Generate T4A form
-#[tauri::command]
-pub async fn generate_t4a(
-    employee_id: i64,
-    year: i32,
-    output_path: String,
-    state: State<'_, AppState>,
-) -> Result<String, CommandError> {
-    with_db(&state, |db| {
-        // Get employee and company data
-        let employee = db.employees().get(employee_id)?;
-        let company = db.company().get()?
-            .ok_or_else(|| CommandError::new("Company information not set"))?;
-        
-        // Create T4A data (for contractors/other income - typically empty for regular employees)
-        let t4a_data = cpr_reports::t4a::T4AData {
-            employee: employee.clone(),
-            year,
-            pension_or_superannuation: None,
-            lump_sum_payments: None,
-            self_employed_commissions: None,
-            income_tax_deducted: None,
-            annuities: None,
-            fees_for_services: None,
-            other_income: None,
-        };
-        
-        // Generate T4A to file
-        let path = PathBuf::from(&output_path);
-        cpr_reports::t4a::generate_t4a(&path, &t4a_data, &company)
-            .map_err(|e| CommandError::new(format!("Failed to generate T4A: {}", e)))?;
-        
-        Ok(output_path)
-    })
-}
-
-/// Generate T5 form
-#[tauri::command]
-pub async fn generate_t5(
-    employee_id: i64,
-    year: i32,
-    output_path: String,
-    state: State<'_, AppState>,
-) -> Result<String, CommandError> {
-    with_db(&state, |db| {
-        // Get employee and company data
-        let employee = db.employees().get(employee_id)?;
-        let company = db.company().get()?
-            .ok_or_else(|| CommandError::new("Company information not set"))?;
-        
-        // Create T5 data (for investment income - typically empty for regular employees)
-        let t5_data = cpr_reports::t5::T5Data {
-            employee: employee.clone(),
-            year,
-            interest_from_canadian_sources: None,
-            dividends_other_than_eligible: None,
-            eligible_dividends: None,
-            actual_amount_of_eligible_dividends: None,
-            taxable_amount_of_dividends: None,
-            foreign_income: None,
-            foreign_tax_paid: None,
-            other_income: None,
-        };
-        
-        // Generate T5 to file
-        let path = PathBuf::from(&output_path);
-        cpr_reports::t5::generate_t5(&path, &t5_data, &company)
-            .map_err(|e| CommandError::new(format!("Failed to generate T5: {}", e)))?;
-        
-        Ok(output_path)
-    })
-}
-
 /// Export payroll data to CSV and save to file
 #[tauri::command]
 pub async fn export_payroll_csv(
@@ -479,53 +406,6 @@ pub async fn generate_payroll_t4(
             // Generate T4
             cpr_reports::t4::generate_t4(&path, &t4_data, &company)
                 .map_err(|e| CommandError::new(format!("Failed to generate T4 for {}: {}", employee.employee_number, e)))?;
-            
-            generated_files.push(path.to_string_lossy().to_string());
-        }
-        
-        Ok(generated_files)
-    })
-}
-
-/// Generate T4As for all employees for a specific year
-#[tauri::command]
-pub async fn generate_payroll_t4a(
-    year: i32,
-    output_dir: String,
-    state: State<'_, AppState>,
-) -> Result<Vec<String>, CommandError> {
-    let t4a_dir = get_output_dir(&state, &output_dir)?;
-    fs::create_dir_all(&t4a_dir)
-        .map_err(|e| CommandError::new(format!("Failed to create output directory: {}", e)))?;
-
-    with_db(&state, |db| {
-        let employees = db.employees().list_all()?;
-        let company = db.company().get()?
-            .ok_or_else(|| CommandError::new("Company information not set"))?;
-        
-        let mut generated_files = Vec::new();
-        
-        for employee in employees.iter().filter(|e| e.is_active) {
-            // Create T4A data (empty for regular employees)
-            let t4a_data = cpr_reports::t4a::T4AData {
-                employee: employee.clone(),
-                year,
-                pension_or_superannuation: None,
-                lump_sum_payments: None,
-                self_employed_commissions: None,
-                income_tax_deducted: None,
-                annuities: None,
-                fees_for_services: None,
-                other_income: None,
-            };
-            
-            // Generate file path
-            let filename = format!("T4A_{}_{}_{}.pdf", year, employee.employee_number, employee.last_name);
-            let path = t4a_dir.join(filename);
-            
-            // Generate T4A
-            cpr_reports::t4a::generate_t4a(&path, &t4a_data, &company)
-                .map_err(|e| CommandError::new(format!("Failed to generate T4A for {}: {}", employee.employee_number, e)))?;
             
             generated_files.push(path.to_string_lossy().to_string());
         }

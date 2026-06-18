@@ -18,16 +18,6 @@ export interface T4Params extends ReportGenerationParams {
   year: number
 }
 
-export interface T4AParams extends ReportGenerationParams {
-  employee_id: number
-  year: number
-}
-
-export interface T5Params extends ReportGenerationParams {
-  employee_id: number
-  year: number
-}
-
 export interface PaystubParams extends ReportGenerationParams {
   payroll_id: number
 }
