@@ -1,0 +1,9 @@
+# Maximum width of each line (default: 100)
+max_width = 160
+
+# Maximum width of a function call before breaking (default: 60)
+fn_call_width = 140
+
+# Use small heuristics to scale various width settings with max_width
+# "Default" uses the default values, "Max" maximizes the heuristics
+use_small_heuristics = "Max"

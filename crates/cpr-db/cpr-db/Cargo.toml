@@ -1,0 +1,19 @@
+[package]
+name = "cpr-db"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+rusqlite = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+rust_decimal = { workspace = true }
+rust_decimal_macros = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+argon2 = { workspace = true }
+rand = { workspace = true }
+cpr-core = { workspace = true }

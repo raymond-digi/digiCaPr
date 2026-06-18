@@ -1,0 +1,71 @@
+# ai plans
+*_*.md
+
+# local
+/local/
+
+# Rust
+/target/
+**/*.rs.bk
+*.pdb
+Cargo.lock
+
+# Vue.js / Vite
+/dist/
+/build/
+/node_modules/
+/.vite/
+/*.js
+/*.ts
+/*.map
+
+# TypeScript
+*.tsbuildinfo
+
+# Tauri
+/src-tauri/target/
+/src-tauri/Cargo.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+
+# Backup files
+*.bak
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+
+# Backup files
+*.bak

@@ -1,0 +1,32 @@
+[package]
+name = "canadian-payroll"
+version = "0.1.0"
+description = "Digi Canadian Payroll App"
+authors = ["CPR Team"]
+license = ""
+repository = ""
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+tauri-build = { version = "1.5", features = [] }
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+tauri = { version = "1.5", features = [ "path-all", "dialog-all", "fs-all", "shell-open"] }
+chrono = { version = "0.4", features = ["serde"] }
+rust_decimal = "1.33"
+rusqlite = "0.30"
+csv = "1.3"
+
+# Internal crates - no changes needed to core functionality
+cpr-core = { path = "../crates/cpr-core" }
+cpr-db = { path = "../crates/cpr-db" }
+cpr-reports = { path = "../crates/cpr-reports" }
+
+[features]
+# This feature is used for production builds or when `devPath` points to the filesystem
+# DO NOT REMOVE!!
+custom-protocol = ["tauri/custom-protocol"]
