@@ -13,10 +13,12 @@
           Create a remittance for all unfiled paid payrolls before a specific date.
         </p>
 
-        <v-select v-model="selectedMonth" :items="monthOptions" item-title="label" item-value="value" label="Cutoff Month" hint="Include all paid payrolls before the end of the selected month" persistent-hint variant="outlined" density="compact" class="mb-4" />
+        <v-select v-model="selectedMonth" :items="monthOptions" item-title="label" item-value="value" label="Cutoff Month" hint="Include all paid payrolls before the end of the selected month"
+          persistent-hint variant="outlined" density="compact" class="mb-4" />
 
         <v-expand-transition>
-          <v-text-field v-if="selectedMonth === 'custom'" v-model="customDate" label="Cutoff Date" type="date" hint="Select the exact cutoff date" persistent-hint variant="outlined" density="compact" class="mb-4" />
+          <v-text-field v-if="selectedMonth === 'custom'" v-model="customDate" label="Cutoff Date" type="date" hint="Select the exact cutoff date" persistent-hint variant="outlined" density="compact"
+            class="mb-4" />
         </v-expand-transition>
 
         <v-btn color="primary" block :loading="loading" :disabled="!cutoffDate" @click="fetchSummary">

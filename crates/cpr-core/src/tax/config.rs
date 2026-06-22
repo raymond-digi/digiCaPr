@@ -13,70 +13,16 @@ use crate::tax::{
 };
 
 /// GitHub repository configuration for remote config updates
-/// 
-/// For APP UPDATES: Use Tauri's built-in updater plugin instead of this module.
-/// See https://tauri.app/docs/distrib/updater for Tauri app self-update setup.
-/// 
+///
+/// For APP UPDATES: Use Tauri's built-in updater plugin (tauri-plugin-updater).
+/// See https://tauri.app/distribute/publishing/ for Tauri app self-update setup.
+///
 /// For CONFIG UPDATES: This module handles downloading new tax config files
 /// from GitHub Releases and storing them in the user's config directory.
-const GITHUB_OWNER: &str = "your-github-username";
-const GITHUB_REPO: &str = "canadian-payroll-system";
-const GITHUB_CONFIG_PATH: &str = "config";
-
-/// Tauri app update configuration (for app self-updates)
-/// This is separate from config updates - Tauri handles app binary updates
-#[cfg(feature = "app-updater")]
-pub mod app_updater {
-    use serde::{Deserialize, Serialize};
-    
-    /// Response from GitHub releases API for app updates
-    #[derive(Debug, Deserialize, Serialize)]
-    pub struct AppRelease {
-        pub tag_name: String,
-        pub name: Option<String>,
-        pub body: Option<String>,
-        pub html_url: String,
-        pub assets: Vec<AppAsset>,
-    }
-    
-    #[derive(Debug, Deserialize, Serialize)]
-    pub struct AppAsset {
-        pub name: String,
-        pub browser_download_url: String,
-        pub size: u64,
-    }
-    
-    /// Check for app updates by comparing current version with latest GitHub release
-    pub async fn check_app_update(
-        current_version: &str,
-        owner: &str,
-        repo: &str,
-    ) -> Result<Option<AppRelease>, Box<dyn std::error::Error + Send + Sync>> {
-        let url = format!("https://api.github.com/repos/{}/{}/releases/latest", owner, repo);
-        
-        let client = reqwest::Client::new();
-        let response = client
-            .get(&url)
-            .header("User-Agent", "CanadianPayrollSystem")
-            .header("Accept", "application/vnd.github.v3+json")
-            .send()
-            .await?;
-        
-        if !response.status().is_success() {
-            return Ok(None);
-        }
-        
-        let release: AppRelease = response.json().await?;
-        
-        // Compare versions (simple comparison - for production use semver crate)
-        let latest_version = release.tag_name.trim_start_matches('v');
-        if latest_version != current_version {
-            return Ok(Some(release));
-        }
-        
-        Ok(None)
-    }
-}
+///
+/// TODO: Replace with actual GitHub repository owner and name before first release.
+const GITHUB_OWNER: &str = "raymond-digi";
+const GITHUB_REPO: &str = "digiCaPr";
 
 /// Resolve the best config path, checking in order:
 /// 1. User config directory (writable, for downloaded updates)

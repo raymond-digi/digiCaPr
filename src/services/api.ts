@@ -1,8 +1,9 @@
 // API service layer for Tauri commands
-import { invoke } from '@tauri-apps/api/tauri'
+import { invoke } from '@tauri-apps/api/core'
 import type { Employee, PayRateHistory, EmploymentHistory, PersonalAmount, EmployeeAutofill } from '@/types/employee'
 import type { Payroll, PayrollCalculationInput, YtdTotals } from '@/types/payroll'
 import type { Company } from '@/types/company'
+import type { RecentDatabase } from '@/types/recent'
 
 // Database Commands
 export const databaseApi = {
@@ -467,4 +468,43 @@ export const vacationApi = {
 
   getTimeOffHistory: (employeeId: number) =>
     invoke<any[]>('get_vacation_time_off_history', { employeeId }),
+}
+
+// Update Commands
+export interface UpdateInfo {
+  version: string
+  notes?: string
+  download_url: string
+}
+
+export const updateApi = {
+  checkForUpdates: () =>
+    invoke<UpdateInfo | null>('check_for_updates'),
+
+  installUpdate: () =>
+    invoke<void>('install_update'),
+}
+
+// Config Update Commands
+export const configUpdateApi = {
+  checkConfigUpdates: (year: number) =>
+    invoke<number | null>('check_config_updates', { year }),
+
+  downloadConfigUpdate: (year: number) =>
+    invoke<any>('download_config_update', { year }),
+}
+
+// Recent Database Commands
+export const recentApi = {
+  getRecentDatabases: () =>
+    invoke<RecentDatabase[]>('get_recent_databases'),
+
+  addRecentDatabase: (path: string, companyName: string | null) =>
+    invoke<RecentDatabase[]>('add_recent_database', { path, companyName }),
+
+  removeRecentDatabase: (path: string) =>
+    invoke<RecentDatabase[]>('remove_recent_database', { path }),
+
+  updateRecentDatabaseCompany: (path: string, companyName: string | null) =>
+    invoke<RecentDatabase[]>('update_recent_database_company', { path, companyName }),
 }

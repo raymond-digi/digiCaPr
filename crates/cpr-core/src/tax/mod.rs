@@ -19,10 +19,6 @@ pub use config::check_github_update;
 pub use config::download_github_config;
 pub use config::update_if_available;
 
-// App updater module (requires "app-updater" feature)
-#[cfg(feature = "app-updater")]
-pub use config::app_updater;
-
 /// Trait for retrieving year-to-date totals for tax calculations
 /// This allows to retrieve YTD values without depending on the database layer
 pub trait YtdProvider {
@@ -65,7 +61,7 @@ pub trait EmployeeProvider {
 }
 
 /// Tax year configuration
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize)]
 pub struct TaxYearConfig {
     pub year: i32,
     pub cpp: CppConfig,
@@ -75,7 +71,7 @@ pub struct TaxYearConfig {
     pub provincial: ProvincialTaxConfig,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize)]
 pub struct CppConfig {
     pub basic_exemption: Decimal,
     pub max_pensionable_earnings: Decimal,
@@ -86,14 +82,14 @@ pub struct CppConfig {
     pub max_base_contribution: Decimal,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize)]
 pub struct Cpp2Config {
     pub rate: Decimal,
     pub max_earnings: Decimal,
     pub max_contribution: Decimal,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize)]
 pub struct EiConfig {
     pub max_insurable_earnings: Decimal,
     pub employee_rate: Decimal,
@@ -102,19 +98,19 @@ pub struct EiConfig {
     pub qc_max_contribution: Decimal,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize)]
 pub struct FederalTaxConfig {
     pub basic_personal_amount: Decimal,
     pub canada_employment_amount: Decimal,
     pub brackets: Vec<TaxBracket>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize)]
 pub struct ProvincialTaxConfig {
     pub province_configs: HashMap<Province, ProvinceTaxRates>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize)]
 pub struct ProvinceTaxRates {
     pub basic_personal_amount: Decimal,
     pub canada_employment_amount: Decimal,
@@ -129,7 +125,7 @@ pub struct ProvinceTaxRates {
     pub s2_amount: Decimal,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize)]
 pub struct TaxBracket {
     pub lower_limit: Decimal,
     pub upper_limit: Option<Decimal>, // None for top bracket
@@ -137,13 +133,13 @@ pub struct TaxBracket {
     pub constant: Decimal, // K constant for simplified tax calculation (R × A - K)
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize)]
 pub struct Surtax {
     pub threshold: Decimal,
     pub rate: Decimal,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize)]
 pub struct SurtaxTier {
     pub threshold: Decimal,
     pub rate: Decimal,

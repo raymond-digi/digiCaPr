@@ -2,13 +2,13 @@
   <v-app>
     <AppBar />
     <Sidebar />
-    
+
     <v-main>
       <v-container fluid class="pa-4">
         <slot />
       </v-container>
     </v-main>
-    
+
     <Notification />
   </v-app>
 </template>

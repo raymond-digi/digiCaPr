@@ -13,12 +13,7 @@
               No pay rate history available
             </div>
             <v-timeline v-else side="end" density="compact" align="start" size="small">
-              <v-timeline-item
-                v-for="(rate, index) in payRateHistory"
-                :key="rate.id"
-                :dot-color="index === 0 ? 'primary' : 'grey'"
-                size="small"
-              >
+              <v-timeline-item v-for="(rate, index) in payRateHistory" :key="rate.id" :dot-color="index === 0 ? 'primary' : 'grey'" size="small">
                 <template #opposite>
                   <div class="text-caption">{{ formatDate(rate.effective_date) }}</div>
                 </template>
@@ -53,12 +48,7 @@
               No employment history available
             </div>
             <v-timeline v-else side="end" density="compact" align="start" size="small">
-              <v-timeline-item
-                v-for="(emp, index) in employmentHistory"
-                :key="emp.id"
-                :dot-color="index === 0 ? 'success' : 'grey'"
-                size="small"
-              >
+              <v-timeline-item v-for="(emp, index) in employmentHistory" :key="emp.id" :dot-color="index === 0 ? 'success' : 'grey'" size="small">
                 <template #opposite>
                   <div class="text-caption">{{ formatDate(emp.hire_date) }}</div>
                 </template>

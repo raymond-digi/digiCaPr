@@ -81,8 +81,8 @@
                 <!-- Base Pay for Salaried -->
                 <v-row class="mt-2" v-else>
                   <v-col cols="5" sm="4" md="5" xl="3">
-                    <v-text-field v-model.number="grossPay" label="Base Pay" type="number" min="0" step="0.01" prefix="$" :rules="[rules.defined]" variant="outlined"
-                      density="compact" :hint="`period: ${formatCurrency(defaultGrossPay)}`" persistent-hint />
+                    <v-text-field v-model.number="grossPay" label="Base Pay" type="number" min="0" step="0.01" prefix="$" :rules="[rules.defined]" variant="outlined" density="compact"
+                      :hint="`period: ${formatCurrency(defaultGrossPay)}`" persistent-hint />
                   </v-col>
                   <v-col cols="7" sm="6" md="7" xl="8">
                     <v-card variant="tonal" color="info" style="height: 42px; display: flex; align-items: center;">

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Dashboard from '@/views/Dashboard.vue'
+import WelcomeView from '@/views/WelcomeView.vue'
 import { useAppStore } from '@/stores/app'
 
 const router = createRouter({
@@ -9,6 +10,11 @@ const router = createRouter({
       path: '/',
       name: 'dashboard',
       component: Dashboard
+    },
+    {
+      path: '/welcome',
+      name: 'welcome',
+      component: WelcomeView
     },
     {
       path: '/employees',
@@ -62,15 +68,15 @@ router.beforeEach(async (to, from, next) => {
     await appStore.checkDatabaseStatus()
   }
   
-  // Allow navigation to settings without database
-  if (to.name === 'settings') {
+  // Allow navigation to settings and welcome without database
+  if (to.name === 'settings' || to.name === 'welcome') {
     next()
     return
   }
   
-  // Redirect to settings if no database is open
-  if (!appStore.isDatabaseOpen && to.name !== 'settings') {
-    next({ name: 'settings' })
+  // Redirect to welcome if no database is open
+  if (!appStore.isDatabaseOpen && to.name !== 'welcome') {
+    next({ name: 'welcome' })
     return
   }
   

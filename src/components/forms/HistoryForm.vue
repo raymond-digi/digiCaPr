@@ -11,17 +11,8 @@
             <v-row>
               <!-- Employee Selection -->
               <v-col cols="12">
-                <v-autocomplete
-                  v-model="formData.employee_id"
-                  label="Employee*"
-                  :items="employeeOptions"
-                  item-title="text"
-                  item-value="value"
-                  :rules="[rules.required]"
-                  variant="outlined"
-                  density="comfortable"
-                  @update:model-value="handleEmployeeChange"
-                />
+                <v-autocomplete v-model="formData.employee_id" label="Employee*" :items="employeeOptions" item-title="text" item-value="value" :rules="[rules.required]" variant="outlined"
+                  density="comfortable" @update:model-value="handleEmployeeChange" />
               </v-col>
 
               <!-- Pay Period Section -->
@@ -32,61 +23,32 @@
 
               <!-- Pay Period Start -->
               <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="formData.pay_period_start"
-                  label="Period Start*"
-                  :rules="[rules.required, rules.date]"
-                  variant="outlined"
-                  density="comfortable"
-                  type="date"
-                />
+                <v-text-field v-model="formData.pay_period_start" label="Period Start*" :rules="[rules.required, rules.date]" variant="outlined" density="comfortable" type="date" />
               </v-col>
 
               <!-- Pay Period End -->
               <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="formData.pay_period_end"
-                  label="Period End*"
-                  :rules="[rules.required, rules.date, rules.endAfterStart]"
-                  variant="outlined"
-                  density="comfortable"
-                  type="date"
-                />
+                <v-text-field v-model="formData.pay_period_end" label="Period End*" :rules="[rules.required, rules.date, rules.endAfterStart]" variant="outlined" density="comfortable" type="date" />
               </v-col>
 
               <!-- Pay Date -->
               <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="formData.pay_date"
-                  label="Pay Date*"
-                  :rules="[rules.required, rules.date]"
-                  variant="outlined"
-                  density="comfortable"
-                  type="date"
-                />
+                <v-text-field v-model="formData.pay_date" label="Pay Date*" :rules="[rules.required, rules.date]" variant="outlined" density="comfortable" type="date" />
               </v-col>
 
 
               <!-- Hours/Amount Input -->
               <v-col cols="12" v-if="selectedEmployee">
-                <v-text-field
-                  v-model.number="formData.gross_pay"
-                  :label="selectedEmployee.pay_type === 'Hourly' ? 'Hours Worked*' : 'Pay Amount*'"
-                  :rules="[rules.required, rules.positiveNumber]"
-                  variant="outlined"
-                  density="comfortable"
-                  type="number"
-                  step="0.01"
-                  :suffix="selectedEmployee.pay_type === 'Hourly' ? 'hours' : ''"
-                  :prefix="selectedEmployee.pay_type === 'Weekly' || selectedEmployee.pay_type === 'Monthly' || selectedEmployee.pay_type === 'Annual' ? '$' : ''"
-                />
+                <v-text-field v-model.number="formData.gross_pay" :label="selectedEmployee.pay_type === 'Hourly' ? 'Hours Worked*' : 'Pay Amount*'" :rules="[rules.required, rules.positiveNumber]"
+                  variant="outlined" density="comfortable" type="number" step="0.01" :suffix="selectedEmployee.pay_type === 'Hourly' ? 'hours' : ''"
+                  :prefix="selectedEmployee.pay_type === 'Weekly' || selectedEmployee.pay_type === 'Monthly' || selectedEmployee.pay_type === 'Annual' ? '$' : ''" />
               </v-col>
 
               <!-- Preview Section -->
               <v-col cols="12" v-if="preview">
                 <v-divider class="my-2" />
                 <h4 class="text-subtitle-1 mb-2">Payroll Preview</h4>
-                
+
                 <v-card variant="outlined" class="mb-2">
                   <v-card-text>
                     <v-row dense>
@@ -158,13 +120,7 @@
         <v-btn color="grey" variant="text" @click="handleCancel">
           Cancel
         </v-btn>
-        <v-btn 
-          color="primary" 
-          variant="elevated" 
-          @click="handleSave" 
-          :disabled="!valid || !preview" 
-          :loading="loading"
-        >
+        <v-btn color="primary" variant="elevated" @click="handleSave" :disabled="!valid || !preview" :loading="loading">
           Save Payroll
         </v-btn>
       </v-card-actions>
@@ -214,7 +170,7 @@ const defaultFormData = (): PayrollCalculationInput => {
 
 const formData = ref<PayrollCalculationInput>(defaultFormData())
 
-const employeeOptions = computed(() => 
+const employeeOptions = computed(() =>
   props.employees
     .filter(e => e.is_active)
     .map(e => ({
@@ -223,7 +179,7 @@ const employeeOptions = computed(() =>
     }))
 )
 
-const selectedEmployee = computed(() => 
+const selectedEmployee = computed(() =>
   props.employees.find(e => e.id === formData.value.employee_id)
 )
 
@@ -253,7 +209,7 @@ const rules = {
   },
   endAfterStart: (value: string) => {
     if (!value || !formData.value.pay_period_start) return true
-    return new Date(value) >= new Date(formData.value.pay_period_start) || 
+    return new Date(value) >= new Date(formData.value.pay_period_start) ||
       'End date must be after start date'
   }
 }
@@ -351,6 +307,6 @@ const handleSave = async () => {
 .v-card-actions {
   flex-shrink: 0 !important;
   background: white !important;
-  border-top: 1px solid rgba(0,0,0,0.12) !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.12) !important;
 }
 </style>

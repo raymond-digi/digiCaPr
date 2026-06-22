@@ -259,10 +259,10 @@
       <v-card>
         <v-card-title>Record Vacation Adjustment – {{ selectedEmployee?.first_name }} {{ selectedEmployee?.last_name }}</v-card-title>
         <v-card-text>
-          <v-text-field v-model.number="adjustmentAmount" label="Amount ($)" type="number" step="0.01" prefix="$"
-            hint="Positive to add, negative to deduct" persistent-hint variant="outlined" class="mb-3" />
-          <v-text-field v-if="isNonHourlyEmployee" v-model.number="adjustmentDays" label="Days" type="number" step="0.5"
-            hint="Positive to add, negative to deduct (independent of dollar amount)" persistent-hint variant="outlined" class="mb-3" />
+          <v-text-field v-model.number="adjustmentAmount" label="Amount ($)" type="number" step="0.01" prefix="$" hint="Positive to add, negative to deduct" persistent-hint variant="outlined"
+            class="mb-3" />
+          <v-text-field v-if="isNonHourlyEmployee" v-model.number="adjustmentDays" label="Days" type="number" step="0.5" hint="Positive to add, negative to deduct (independent of dollar amount)"
+            persistent-hint variant="outlined" class="mb-3" />
           <v-text-field v-model="adjustmentNotes" label="Notes" variant="outlined" />
         </v-card-text>
         <v-card-actions>
@@ -291,12 +291,10 @@
               <v-text-field :model-value="timeOffPayTypeDisplay" label="Pay Type" variant="outlined" readonly density="compact" />
             </v-col>
             <v-col cols="6" v-if="isNonHourlyEmployee">
-              <v-text-field :model-value="timeOffDays" label="Days" type="number" variant="outlined" readonly density="compact"
-                hint="Auto-calculated from dates (weekdays)" persistent-hint />
+              <v-text-field :model-value="timeOffDays" label="Days" type="number" variant="outlined" readonly density="compact" hint="Auto-calculated from dates (weekdays)" persistent-hint />
             </v-col>
             <v-col cols="6" v-else>
-              <v-text-field :model-value="0" label="Payout Amount" type="number" step="0.01" prefix="$" variant="outlined"
-                readonly hint="Always $0 for hourly employees" persistent-hint />
+              <v-text-field :model-value="0" label="Payout Amount" type="number" step="0.01" prefix="$" variant="outlined" readonly hint="Always $0 for hourly employees" persistent-hint />
             </v-col>
           </v-row>
           <v-text-field v-model="timeOffNotes" label="Notes" variant="outlined" />
@@ -327,8 +325,7 @@
               <v-text-field :model-value="editingTimeOff.pay_type" label="Pay Type" variant="outlined" readonly density="compact" />
             </v-col>
             <v-col cols="6" v-if="isNonHourlyEmployee">
-              <v-text-field :model-value="editTimeOffDays" label="Days" type="number" variant="outlined" readonly density="compact"
-                hint="Auto-calculated from dates (weekdays)" persistent-hint />
+              <v-text-field :model-value="editTimeOffDays" label="Days" type="number" variant="outlined" readonly density="compact" hint="Auto-calculated from dates (weekdays)" persistent-hint />
             </v-col>
             <v-col cols="6" v-else>
               <v-text-field v-model.number="editTimeOffPayoutAmount" label="Payout Amount" type="number" step="0.01" prefix="$" variant="outlined" />

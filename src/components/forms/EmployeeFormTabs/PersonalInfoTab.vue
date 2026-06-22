@@ -3,8 +3,7 @@
     <v-row>
       <!-- Employee Number -->
       <v-col cols="12" md="6">
-        <v-text-field v-model="formData.employee_number" label="Employee Number*" :rules="[rules.required]"
-          variant="outlined" density="comfortable" />
+        <v-text-field v-model="formData.employee_number" label="Employee Number*" :rules="[rules.employeeNumber]" variant="outlined" density="comfortable" maxlength="20" counter="20" />
       </v-col>
 
       <!-- Active Status -->
@@ -14,14 +13,12 @@
 
       <!-- First Name -->
       <v-col cols="12" md="6">
-        <v-text-field v-model="formData.first_name" label="First Name*" :rules="[rules.required]" variant="outlined"
-          density="comfortable" />
+        <v-text-field v-model="formData.first_name" label="First Name*" :rules="[rules.required]" variant="outlined" density="comfortable" />
       </v-col>
 
       <!-- Last Name -->
       <v-col cols="12" md="6">
-        <v-text-field v-model="formData.last_name" label="Last Name*" :rules="[rules.required]" variant="outlined"
-          density="comfortable" />
+        <v-text-field v-model="formData.last_name" label="Last Name*" :rules="[rules.required]" variant="outlined" density="comfortable" />
       </v-col>
 
       <!-- Address Section -->
@@ -32,26 +29,22 @@
 
       <!-- Street -->
       <v-col cols="12">
-        <v-text-field v-model="formData.address.street" label="Street*" :rules="[rules.required]" variant="outlined"
-          density="comfortable" />
+        <v-text-field v-model="formData.address.street" label="Street*" :rules="[rules.required]" variant="outlined" density="comfortable" />
       </v-col>
 
       <!-- City -->
       <v-col cols="12" md="4">
-        <v-text-field v-model="formData.address.city" label="City*" :rules="[rules.required]" variant="outlined"
-          density="comfortable" />
+        <v-text-field v-model="formData.address.city" label="City*" :rules="[rules.required]" variant="outlined" density="comfortable" />
       </v-col>
 
       <!-- Province -->
       <v-col cols="12" md="4">
-        <v-select v-model="formData.address.province" label="Province*" :items="provinces" :rules="[rules.required]"
-          variant="outlined" density="comfortable" />
+        <v-select v-model="formData.address.province" label="Province*" :items="provinces" :rules="[rules.required]" variant="outlined" density="comfortable" />
       </v-col>
 
       <!-- Postal Code -->
       <v-col cols="12" md="4">
-        <v-text-field v-model="formData.address.postal_code" label="Postal Code*"
-          :rules="[rules.required, rules.postalCode]" variant="outlined" density="comfortable" placeholder="A1A 1A1" />
+        <v-text-field v-model="formData.address.postal_code" label="Postal Code*" :rules="[rules.required, rules.postalCode]" variant="outlined" density="comfortable" placeholder="A1A 1A1" />
       </v-col>
     </v-row>
   </v-container>

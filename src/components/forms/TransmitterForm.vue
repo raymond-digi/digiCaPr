@@ -24,29 +24,14 @@
 
               <!-- BN15 (Business Number with RP program identifier) -->
               <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="formData.bn15"
-                  label="Transmitter BN15*"
-                  :rules="[rules.required, rules.bn15]"
-                  variant="outlined"
-                  density="comfortable"
-                  placeholder="123456789RP0001"
-                  hint="Business Number with program identifier (e.g., 123456789RP0001)"
-                  persistent-hint
-                />
+                <v-text-field v-model="formData.bn15" label="Transmitter BN15*" :rules="[rules.required, rules.bn15]" variant="outlined" density="comfortable" placeholder="123456789RP0001"
+                  hint="Business Number with program identifier (e.g., 123456789RP0001)" persistent-hint />
               </v-col>
 
               <!-- Transmitter Name -->
               <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="formData.name"
-                  label="Transmitter Name*"
-                  :rules="[rules.required]"
-                  variant="outlined"
-                  density="comfortable"
-                  hint="Legal name of the transmitting organization"
-                  persistent-hint
-                />
+                <v-text-field v-model="formData.name" label="Transmitter Name*" :rules="[rules.required]" variant="outlined" density="comfortable" hint="Legal name of the transmitting organization"
+                  persistent-hint />
               </v-col>
             </v-row>
 
@@ -59,36 +44,17 @@
 
               <!-- Contact Person -->
               <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="formData.contact_name"
-                  label="Contact Person Name"
-                  variant="outlined"
-                  density="comfortable"
-                />
+                <v-text-field v-model="formData.contact_name" label="Contact Person Name" variant="outlined" density="comfortable" />
               </v-col>
 
               <!-- Phone Area Code -->
               <v-col cols="12" md="3">
-                <v-text-field
-                  v-model="formData.phone_area"
-                  label="Area Code"
-                  variant="outlined"
-                  density="comfortable"
-                  placeholder="416"
-                  :rules="[rules.areaCode]"
-                />
+                <v-text-field v-model="formData.phone_area" label="Area Code" variant="outlined" density="comfortable" placeholder="416" :rules="[rules.areaCode]" />
               </v-col>
 
               <!-- Phone Number -->
               <v-col cols="12" md="3">
-                <v-text-field
-                  v-model="formData.phone"
-                  label="Phone Number"
-                  variant="outlined"
-                  density="comfortable"
-                  placeholder="321-7654"
-                  :rules="[rules.phone]"
-                />
+                <v-text-field v-model="formData.phone" label="Phone Number" variant="outlined" density="comfortable" placeholder="321-7654" :rules="[rules.phone]" />
               </v-col>
             </v-row>
 
@@ -101,26 +67,13 @@
 
               <!-- Email -->
               <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="formData.email"
-                  label="Contact Email"
-                  variant="outlined"
-                  density="comfortable"
-                  type="email"
-                  :rules="[rules.email]"
-                />
+                <v-text-field v-model="formData.email" label="Contact Email" variant="outlined" density="comfortable" type="email" :rules="[rules.email]" />
               </v-col>
 
               <!-- Submission Reference -->
               <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="formData.submission_ref_id"
-                  label="Submission Reference ID"
-                  variant="outlined"
-                  density="comfortable"
-                  hint="Optional reference for this submission"
-                  persistent-hint
-                />
+                <v-text-field v-model="formData.submission_ref_id" label="Submission Reference ID" variant="outlined" density="comfortable" hint="Optional reference for this submission"
+                  persistent-hint />
               </v-col>
             </v-row>
           </v-container>
@@ -253,29 +206,29 @@ const REGISTRY_KEYS = {
 const loadTransmitterData = async () => {
   try {
     const data = defaultFormData()
-    
+
     // Load each field from registry
     const bn15 = await registryApi.getString(REGISTRY_KEYS.bn15)
     if (bn15) data.bn15 = bn15
-    
+
     const name = await registryApi.getString(REGISTRY_KEYS.name)
     if (name) data.name = name
-    
+
     const contactName = await registryApi.getString(REGISTRY_KEYS.contact_name)
     if (contactName) data.contact_name = contactName
-    
+
     const phoneArea = await registryApi.getString(REGISTRY_KEYS.phone_area)
     if (phoneArea) data.phone_area = phoneArea
-    
+
     const phone = await registryApi.getString(REGISTRY_KEYS.phone)
     if (phone) data.phone = phone
-    
+
     const email = await registryApi.getString(REGISTRY_KEYS.email)
     if (email) data.email = email
-    
+
     const submissionRef = await registryApi.getString(REGISTRY_KEYS.submission_ref_id)
     if (submissionRef) data.submission_ref_id = submissionRef
-    
+
     formData.value = data
   } catch (error) {
     console.error('Failed to load transmitter data:', error)
@@ -293,7 +246,7 @@ const saveTransmitterData = async () => {
     await registryApi.setString(REGISTRY_KEYS.phone, formData.value.phone)
     await registryApi.setString(REGISTRY_KEYS.email, formData.value.email)
     await registryApi.setString(REGISTRY_KEYS.submission_ref_id, formData.value.submission_ref_id)
-    
+
     emit('save')
     dialog.value = false
   } catch (error) {

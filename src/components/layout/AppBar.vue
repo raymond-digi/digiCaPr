@@ -1,39 +1,23 @@
 <template>
   <v-app-bar color="primary" elevation="2">
     <v-app-bar-nav-icon @click="appStore.toggleSidebar" />
-    
+
     <v-toolbar-title class="text-h6">
       Digi Canadian Payroll App
     </v-toolbar-title>
-    
+
     <v-spacer />
-    
+
     <!-- Database Status -->
-    <v-chip 
-      v-if="appStore.isDatabaseOpen" 
-      color="success" 
-      variant="flat"
-      prepend-icon="mdi-database-check"
-      class="mr-2"
-    >
+    <v-chip v-if="appStore.isDatabaseOpen" color="success" variant="flat" prepend-icon="mdi-database-check" class="mr-2">
       {{ databaseName }}
     </v-chip>
-    <v-chip 
-      v-else 
-      color="warning" 
-      variant="flat"
-      prepend-icon="mdi-database-alert"
-      class="mr-2"
-    >
+    <v-chip v-else color="warning" variant="flat" prepend-icon="mdi-database-alert" class="mr-2">
       No Database
     </v-chip>
-    
+
     <!-- Company Name -->
-    <v-chip 
-      v-if="companyStore.hasCompany"
-      variant="outlined"
-      prepend-icon="mdi-office-building"
-    >
+    <v-chip v-if="companyStore.hasCompany" variant="outlined" prepend-icon="mdi-office-building">
       {{ companyStore.companyName }}
     </v-chip>
   </v-app-bar>

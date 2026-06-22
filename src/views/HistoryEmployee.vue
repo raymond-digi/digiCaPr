@@ -77,8 +77,7 @@
                           No payroll records found for {{ item.year }}.
                         </v-alert>
 
-                        <v-data-table v-else :items="yearPayrolls[item.year]" :headers="payrollHeaders" density="compact" :items-per-page="-1" hide-default-footer fixed-header
-                          disable-sort>
+                        <v-data-table v-else :items="yearPayrolls[item.year]" :headers="payrollHeaders" density="compact" :items-per-page="-1" hide-default-footer fixed-header disable-sort>
                           <template #item.payDate="{ item }">
                             {{ formatDate(item.pay_date) }}
                           </template>
@@ -232,7 +231,7 @@ import { useAppStore } from '@/stores/app'
 import { reportsApi } from '@/services/api'
 import type { Payroll } from '@/types/payroll'
 import { getErrorMessage } from '@/utils/error'
-import { save, open } from '@tauri-apps/api/dialog'
+import { save } from '@tauri-apps/plugin-dialog'
 
 const payrollStore = usePayrollStore()
 const employeeStore = useEmployeeStore()
@@ -421,12 +420,6 @@ const viewPayroll = (payroll: Payroll) => {
 
 const exportYearPdf = async (year: number) => {
   try {
-    const outputDir = await open({
-      directory: true,
-      title: 'Select output directory for PDF report'
-    })
-    if (!outputDir || typeof outputDir !== 'string') return
-
     const payrolls = yearPayrolls[year]
     if (!payrolls || payrolls.length === 0) {
       appStore.showNotification('No payroll records to export', 'warning')
@@ -439,8 +432,9 @@ const exportYearPdf = async (year: number) => {
       return
     }
 
-    await reportsApi.generateHistoryPayrollReport(payrollIds, outputDir)
-    appStore.showNotification(`Generated PDF report for ${year}`, 'success')
+    const outputDir = 'reports'
+    const result = await reportsApi.generateHistoryPayrollReport(payrollIds, outputDir)
+    appStore.showNotification(`Generated PDF report for ${year}: ${result}`, 'success')
   } catch (error) {
     appStore.showNotification(`PDF export failed: ${getErrorMessage(error)}`, 'error')
   }

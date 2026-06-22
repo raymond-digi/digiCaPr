@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useEmployeeStore } from '../employee'
-import { invoke } from '@tauri-apps/api/tauri'
+import { invoke } from '@tauri-apps/api/core'
 import type { Employee } from '@/types/employee'
 import { PayType } from '@/types/employee'
 
-vi.mock('@tauri-apps/api/tauri')
+vi.mock('@tauri-apps/api/core')
 
 describe('Employee Store', () => {
   beforeEach(() => {
@@ -64,7 +64,7 @@ describe('Employee Store', () => {
     const store = useEmployeeStore()
     
     await expect(store.fetchEmployees()).rejects.toThrow(errorMessage)
-    expect(store.error).toBe(`Error: ${errorMessage}`)
+    expect(store.error).toBe(errorMessage)
     expect(store.loading).toBe(false)
   })
 

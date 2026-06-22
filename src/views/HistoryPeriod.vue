@@ -63,8 +63,7 @@
 
                     <div v-else>
                       <v-data-table :expanded="getExpandedPeriodKeys(item.year)" @update:expanded="(val: string[]) => { setExpandedPeriodKeys(item.year, val); loadExpandedPeriodPayrolls(val) }"
-                        :items="yearPeriods[item.year]" :headers="periodHeaders" density="compact" :items-per-page="-1" hide-default-footer show-expand item-value="pay_date" fixed-header
-                        disable-sort>
+                        :items="yearPeriods[item.year]" :headers="periodHeaders" density="compact" :items-per-page="-1" hide-default-footer show-expand item-value="pay_date" fixed-header disable-sort>
                         <template #item.period="{ item }">
                           {{ formatDateShort(item.pay_period_start, parseInt(item.pay_period_start?.split('-')[0])) }} – {{ formatDateShort(item.pay_period_end,
                             parseInt(item.pay_period_start?.split('-')[0])) }}
@@ -294,7 +293,7 @@ import { useAppStore } from '@/stores/app'
 import { reportsApi } from '@/services/api'
 import type { Payroll, PayrollPeriod } from '@/types/payroll'
 import { getErrorMessage } from '@/utils/error'
-import { save, open } from '@tauri-apps/api/dialog'
+import { save, open } from '@tauri-apps/plugin-dialog'
 import HistoryEditForm from '@/components/forms/HistoryEditForm.vue'
 
 const payrollStore = usePayrollStore()

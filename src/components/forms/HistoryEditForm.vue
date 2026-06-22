@@ -100,7 +100,8 @@
               <v-col cols="12" sm="6" lg="4" v-for="(earning, index) in formData.additional_earnings" :key="index">
                 <v-row dense>
                   <v-col cols="6">
-                    <v-select v-model="earning.earning_type" label="Type*" :items="earningTypeOptions" item-title="display_name" item-value="name" :rules="[rules.required, rules.uniqueEarningType(index)]" variant="outlined" density="compact" />
+                    <v-select v-model="earning.earning_type" label="Type*" :items="earningTypeOptions" item-title="display_name" item-value="name"
+                      :rules="[rules.required, rules.uniqueEarningType(index)]" variant="outlined" density="compact" />
                   </v-col>
                   <v-col cols="5">
                     <v-text-field v-model.number="earning.amount" label="Amount*" :rules="[rules.required, rules.number]" variant="outlined" density="compact" type="number" step="0.01" prefix="$" />
@@ -148,7 +149,8 @@
               <v-col cols="12" sm="6" lg="4" v-for="(deduction, index) in formData.deductions.additional" :key="index">
                 <v-row dense>
                   <v-col cols="6">
-                    <v-select v-model="deduction.name" label="Name*" :items="deductionTypeOptions" item-title="display_name" item-value="name" :rules="[rules.required, rules.uniqueDeductionType(index)]" variant="outlined" density="compact" />
+                    <v-select v-model="deduction.name" label="Name*" :items="deductionTypeOptions" item-title="display_name" item-value="name"
+                      :rules="[rules.required, rules.uniqueDeductionType(index)]" variant="outlined" density="compact" />
                   </v-col>
                   <v-col cols="5">
                     <v-text-field v-model.number="deduction.amount" label="Amount*" :rules="[rules.required, rules.number]" variant="outlined" density="compact" type="number" step="0.01" prefix="$" />

@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { usePayrollStore } from '../historyPayroll'
-import { invoke } from '@tauri-apps/api/tauri'
+import { invoke } from '@tauri-apps/api/core'
 import type { Payroll } from '@/types/payroll'
 
-vi.mock('@tauri-apps/api/tauri')
+vi.mock('@tauri-apps/api/core')
 
 describe('Payroll Store', () => {
   beforeEach(() => {

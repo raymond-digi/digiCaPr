@@ -17,12 +17,10 @@
               <EmploymentTab :form-data="formData" :rules="rules" :provinces="provinces" />
             </template>
             <template #payroll>
-              <PayrollTab ref="payrollTabRef" :form-data="formData" :rules="rules" :pay-types="payTypes"
-                :provinces="provinces" />
+              <PayrollTab ref="payrollTabRef" :form-data="formData" :rules="rules" :pay-types="payTypes" :provinces="provinces" />
             </template>
             <template #history>
-              <HistoryTab :pay-rate-history="payRateHistory" :employment-history="employmentHistory"
-                :loading-history="loadingHistory" :format-date="formatDate" />
+              <HistoryTab :pay-rate-history="payRateHistory" :employment-history="employmentHistory" :loading-history="loadingHistory" :format-date="formatDate" />
             </template>
           </TabView>
         </v-form>
@@ -58,6 +56,7 @@ import { formatDateLocal, toDateString } from '@/utils/date'
 import type { Employee, PayRateHistory, EmploymentHistory } from '@/types/employee'
 import { Province, PayType } from '@/types/employee'
 import { employeeApi } from '@/services/api'
+import { useEmployeeStore } from '@/stores/employee'
 
 const props = defineProps<{
   modelValue: boolean
@@ -68,6 +67,27 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
   (e: 'save', employee: Employee): void
 }>()
+
+const employeeStore = useEmployeeStore()
+
+// Compute the next employee number from existing employees
+const nextEmployeeNumber = (): string => {
+  const employees = employeeStore.employees
+  if (employees.length === 0) return '001'
+
+  // Find all numeric employee numbers and get the max
+  let maxNum = 0
+  for (const emp of employees) {
+    const num = parseInt(emp.employee_number, 10)
+    if (!isNaN(num) && num > maxNum) {
+      maxNum = num
+    }
+  }
+
+  // Pad with leading zeros to match the width of existing numbers (min 3 digits)
+  const maxLen = Math.max(3, String(maxNum).length)
+  return String(maxNum + 1).padStart(maxLen, '0')
+}
 
 const dialog = computed({
   get: () => props.modelValue,
@@ -104,8 +124,6 @@ const allTabsValid = computed(() => {
 
 // Computed property to determine if form is valid
 const isFormValid = computed(() => {
-  // In edit mode, we need to check if the form has been validated
-  // For new employees, rely on the valid state
   if (isEdit.value) {
     // Allow save if form data is present and basic validation passes
     return formData.value.employee_number &&
@@ -114,8 +132,10 @@ const isFormValid = computed(() => {
       formData.value.sin &&
       formData.value.pay_rate > 0
   }
-  // For new employees, require all tabs to be valid
-  return valid.value && allTabsValid.value
+  // For new employees, rely on tab validation (which checks all required fields)
+  // Note: valid.value from v-form v-model is never set to true for new employees
+  // because validate() is not automatically called, so we don't depend on it here
+  return allTabsValid.value
 })
 
 const provinces: Province[] = Object.values(Province).sort() as Province[];
@@ -138,7 +158,12 @@ const defaultFormData = (): Employee => ({
   pay_rate: 0.0,
   date_of_birth: '1990-01-01',
   vacation_pay_rate: 0.04,
+  vacation_balance: 0,
+  vacation_balance_days: 0,
   overtime_multiplier: 1.5,
+  ei_exempt: false,
+  cpp_exempt: false,
+  dental_benefit: 1,
   additional_tax_amount: 0,
   hire_date: toDateString(new Date()),
   termination_date: undefined,
@@ -150,6 +175,11 @@ const formData = ref<Employee>(defaultFormData())
 
 const rules = {
   required: (value: any) => !!value || 'Required field',
+  employeeNumber: (value: string) => {
+    if (!value) return 'Required field'
+    if (value.length > 20) return 'Maximum 20 characters (used as file name)'
+    return true
+  },
   positiveNumber: (value: number) => value > 0 || 'Must be greater than 0',
   sin: (value: string) => {
     // Basic SIN format validation (XXX-XXX-XXX)
@@ -158,14 +188,14 @@ const rules = {
     if (!sinRegex.test(cleanSin)) {
       return 'Invalid SIN format (use XXX-XXX-XXX)'
     }
-    
+
     // Luhn algorithm (mod 10 check digit validation)
     const digits = cleanSin.replace(/-/g, '').split('').map(Number)
     let sum = 0
-    
+
     for (let i = 0; i < digits.length; i++) {
       let digit = digits[i]
-      
+
       // Double every second digit (odd positions: 1, 3, 5, 7)
       if (i % 2 === 1) {
         digit *= 2
@@ -176,7 +206,7 @@ const rules = {
       }
       sum += digit
     }
-    
+
     // Valid if sum is divisible by 10
     return sum % 10 === 0 || 'Invalid SIN check digit'
   },
@@ -226,15 +256,18 @@ const validatePersonalTab = (): 'valid' | 'invalid' => {
     formData.value.address?.city,
     formData.value.address?.postal_code
   ]
-  
+
   // Check if all required fields are filled
   const allFilled = required.every(field => field && String(field).trim() !== '')
-  
+
+  // Check employee number length (used as file name)
+  const empNumValid = !formData.value.employee_number || formData.value.employee_number.length <= 20
+
   // Check postal code format if filled
   const postalCodeValid = !formData.value.address?.postal_code ||
     /^[A-Z]\d[A-Z]\s?\d[A-Z]\d$/i.test(formData.value.address.postal_code)
-  
-  return allFilled && postalCodeValid ? 'valid' : 'invalid'
+
+  return allFilled && empNumValid && postalCodeValid ? 'valid' : 'invalid'
 }
 
 const validateEmploymentTab = (): 'valid' | 'invalid' => {
@@ -242,13 +275,13 @@ const validateEmploymentTab = (): 'valid' | 'invalid' => {
     formData.value.hire_province,
     formData.value.hire_date
   ]
-  
+
   const allFilled = required.every(field => field && String(field).trim() !== '')
-  
+
   // Check termination date is valid if present
   const terminationDateValid = !formData.value.termination_date ||
     !isNaN(new Date(formData.value.termination_date).getTime())
-  
+
   return allFilled && terminationDateValid ? 'valid' : 'invalid'
 }
 
@@ -257,17 +290,17 @@ const validatePayrollTab = (): 'valid' | 'invalid' => {
   const sinValid = (() => {
     if (!formData.value.sin) return false
     const cleanSin = formData.value.sin.replace(/\s/g, '')
-    
+
     // Check format
     if (!/^\d{3}-?\d{3}-?\d{3}$/.test(cleanSin)) return false
-    
+
     // Luhn algorithm (mod 10 check digit validation)
     const digits = cleanSin.replace(/-/g, '').split('').map(Number)
     let sum = 0
-    
+
     for (let i = 0; i < digits.length; i++) {
       let digit = digits[i]
-      
+
       // Double every second digit (odd positions: 1, 3, 5, 7)
       if (i % 2 === 1) {
         digit *= 2
@@ -278,11 +311,11 @@ const validatePayrollTab = (): 'valid' | 'invalid' => {
       }
       sum += digit
     }
-    
+
     // Valid if sum is divisible by 10
     return sum % 10 === 0
   })()
-  
+
   // Check date of birth
   const dobValid = (() => {
     if (!formData.value.date_of_birth) return false
@@ -293,12 +326,12 @@ const validatePayrollTab = (): 'valid' | 'invalid' => {
     const actualAge = monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate()) ? age - 1 : age
     return actualAge >= 15 && actualAge <= 100 && dob < today
   })()
-  
+
   // Check numeric fields
   const payRateValid = formData.value.pay_rate > 0
   const vacationRateValid = formData.value.vacation_pay_rate >= 0 && formData.value.vacation_pay_rate <= 0.20
   const overtimeValid = formData.value.overtime_multiplier >= 1.0 && formData.value.overtime_multiplier <= 3.0
-  
+
   return sinValid && dobValid && payRateValid && vacationRateValid && overtimeValid ? 'valid' : 'invalid'
 }
 
@@ -333,6 +366,8 @@ watch(() => props.modelValue, async (isOpen) => {
   if (isOpen) {
     if (!props.employee) {
       formData.value = defaultFormData()
+      // Auto-fill employee number for new employees
+      formData.value.employee_number = nextEmployeeNumber()
       formRef.value?.resetValidation()
       payRateHistory.value = []
       employmentHistory.value = []
@@ -382,48 +417,32 @@ const handleCancel = () => {
 }
 
 const handleSave = async () => {
-  // Validate all tabs before saving
-  if (formRef.value) {
-    const result = await formRef.value.validate()
-    const isValid = result.valid
-    
-    // Update status for all tabs based on validation
-    if (!isEdit.value) {
-      // For new employees, mark all tabs based on validation
-      // Since the form validates all fields, we need to determine which tab has errors
-      const errors = result.errors || []
-      const errorIds = errors.map((e: any) => e.id || '')
-      
-      // Check each tab's fields for errors
-      const personalFields = ['employee_number', 'first_name', 'last_name', 'address.street', 'address.city', 'address.province', 'address.postal_code']
-      const employmentFields = ['hire_province', 'hire_date']
-      const payrollFields = ['sin', 'date_of_birth', 'pay_type', 'pay_rate', 'vacation_pay_rate', 'overtime_multiplier']
-      
-      const hasPersonalError = personalFields.some(f => errorIds.some((id: string) => id.includes(f.replace('.', '-'))) || errors.some((e: any) => e.field?.includes(f)))
-      const hasEmploymentError = employmentFields.some(f => errorIds.some((id: string) => id.includes(f.replace('.', '-'))) || errors.some((e: any) => e.field?.includes(f)))
-      const hasPayrollError = payrollFields.some(f => errorIds.some((id: string) => id.includes(f.replace('.', '-'))) || errors.some((e: any) => e.field?.includes(f)))
-      
-      tabStatus.value.personal = hasPersonalError ? 'invalid' : 'valid'
-      tabStatus.value.employment = hasEmploymentError ? 'invalid' : 'valid'
-      tabStatus.value.payroll = hasPayrollError ? 'invalid' : 'valid'
-      
-      if (!isValid) {
-        // Switch to the first tab with errors
-        if (hasPersonalError) {
-          activeTab.value = 'personal'
-        } else if (hasEmploymentError) {
-          activeTab.value = 'employment'
-        } else if (hasPayrollError) {
-          activeTab.value = 'payroll'
-        }
+  if (isEdit.value) {
+    // For edit mode, validate via Vuetify form
+    if (formRef.value) {
+      const result = await formRef.value.validate()
+      if (!result.valid) {
         return
       }
     }
-  }
+  } else {
+    // For new employees, use custom tab validation
+    // Force re-validation of all tabs
+    tabStatus.value.personal = validatePersonalTab()
+    tabStatus.value.employment = validateEmploymentTab()
+    tabStatus.value.payroll = validatePayrollTab()
 
-  // Additional check for required fields
-  if (!isFormValid.value) {
-    return
+    if (!allTabsValid.value) {
+      // Switch to the first invalid tab
+      if (tabStatus.value.personal === 'invalid') {
+        activeTab.value = 'personal'
+      } else if (tabStatus.value.employment === 'invalid') {
+        activeTab.value = 'employment'
+      } else if (tabStatus.value.payroll === 'invalid') {
+        activeTab.value = 'payroll'
+      }
+      return
+    }
   }
 
   loading.value = true

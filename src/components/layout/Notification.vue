@@ -1,18 +1,9 @@
 <template>
-  <v-snackbar
-    v-model="appStore.notification.show"
-    :color="appStore.notification.type"
-    :timeout="4000"
-    location="top right"
-    @update:model-value="onClose"
-  >
+  <v-snackbar v-model="appStore.notification.show" :color="appStore.notification.type" :timeout="4000" location="top right" @update:model-value="onClose">
     {{ appStore.notification.message }}
-    
+
     <template #actions>
-      <v-btn
-        variant="text"
-        @click="appStore.hideNotification()"
-      >
+      <v-btn variant="text" @click="appStore.hideNotification()">
         Close
       </v-btn>
     </template>

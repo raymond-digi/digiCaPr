@@ -9,6 +9,10 @@ use state::AppState;
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .manage(AppState::new())
         .invoke_handler(tauri::generate_handler![
             // Database commands
@@ -132,6 +136,18 @@ fn main() {
             commands::vacation::update_vacation_time_off,
             commands::vacation::delete_vacation_time_off,
             commands::vacation::get_vacation_time_off_history,
+
+            // Update commands
+            commands::update::check_for_updates,
+            commands::update::install_update,
+            commands::update::check_config_updates,
+            commands::update::download_config_update,
+            
+            // Recent database commands
+            commands::recent::get_recent_databases,
+            commands::recent::add_recent_database,
+            commands::recent::remove_recent_database,
+            commands::recent::update_recent_database_company,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

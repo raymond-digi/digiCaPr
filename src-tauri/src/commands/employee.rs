@@ -1,4 +1,4 @@
-use tauri::{State, AppHandle};
+use tauri::{State, AppHandle, Manager};
 use crate::state::AppState;
 use crate::error::CommandError;
 use cpr_core::models::{Employee, PayRateHistory, EmploymentHistory, PersonalAmount, Province, PayType};
@@ -48,6 +48,10 @@ pub async fn create_employee(
     mut employee: Employee,
     state: State<'_, AppState>,
 ) -> Result<i64, CommandError> {
+    // Validate employee number length (used as file name in reports)
+    if employee.employee_number.len() > 20 {
+        return Err(CommandError::new("Employee number must be 20 characters or less (used as file name)"));
+    }
     with_db(&state, |db| {
         // Get company information to determine province for personal amounts
         let company = db.company().get()
@@ -84,6 +88,10 @@ pub async fn update_employee(
     employee: Employee,
     state: State<'_, AppState>,
 ) -> Result<(), CommandError> {
+    // Validate employee number length (used as file name in reports)
+    if employee.employee_number.len() > 20 {
+        return Err(CommandError::new("Employee number must be 20 characters or less (used as file name)"));
+    }
     with_db(&state, |db| {
         let id = employee.id.ok_or_else(|| CommandError::new("Employee ID required"))?;
         let old_employee = db.employees().get(id)?;
@@ -274,7 +282,7 @@ fn resolve_config_dir() -> Option<std::path::PathBuf> {
 
 /// Resolve the config directory path using Tauri's resource_dir (for commands with AppHandle)
 fn resolve_config_dir_with_app(app: &AppHandle) -> Option<std::path::PathBuf> {
-    if let Some(resource_dir) = app.path_resolver().resource_dir() {
+    if let Ok(resource_dir) = app.path().resource_dir() {
         // Try direct path first (correct with tuple resource mapping)
         let direct = resource_dir.join("config");
         if direct.exists() {

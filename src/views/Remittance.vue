@@ -65,7 +65,8 @@
                     <v-data-table :items="yearRemittances[item.year]" :headers="remittanceHeaders" density="compact" :items-per-page="-1" hide-default-footer fixed-header
                     :sort-by="[{ key: 'period_start', order: 'desc' }]">
                     <template #item.period="{ item }">
-                      {{ formatDateShort(item.period_start, parseInt(String(item.period_start).split('-')[0])) }} – {{ formatDateShort(item.period_end, parseInt(String(item.period_start).split('-')[0])) }}
+                      {{ formatDateShort(item.period_start, parseInt(String(item.period_start).split('-')[0])) }} – {{ formatDateShort(item.period_end,
+                        parseInt(String(item.period_start).split('-')[0])) }}
                     </template>
 
                     <template #item.total_earnings="{ item }">
@@ -85,7 +86,8 @@
                     </template>
 
                     <template #item.total_deductions="{ item }">
-                      ${{ formatAmount(Number(item.total_cpp ?? 0) + Number(item.total_cpp2 ?? 0) + Number(item.total_ei ?? 0) + Number(item.total_federal_tax ?? 0) + Number(item.total_provincial_tax ?? 0)) }}
+                      ${{ formatAmount(Number(item.total_cpp ?? 0) + Number(item.total_cpp2 ?? 0) + Number(item.total_ei ?? 0) + Number(item.total_federal_tax ?? 0) + Number(item.total_provincial_tax
+                        ?? 0)) }}
                     </template>
 
                     <template #item.grand_total="{ item }">
@@ -155,19 +157,19 @@
     <v-card-title>Remittance Details</v-card-title>
     <v-card-text>
       <v-row>
-        <v-col cols="6">
+        <v-col cols="6" sm="4">
           <div class="text-caption">Period Start</div>
           <div class="text-body-1">{{ formatDate(selectedRemittance.period_start) }}</div>
         </v-col>
-        <v-col cols="6">
+        <v-col cols="6" sm="4">
           <div class="text-caption">Period End</div>
           <div class="text-body-1">{{ formatDate(selectedRemittance.period_end) }}</div>
         </v-col>
-        <v-col cols="6">
-          <div class="text-caption">Generated</div>
-          <div class="text-body-1">{{ formatDateTime(selectedRemittance.generated_at) }}</div>
+        <v-col cols="6" sm="4">
+          <div class="text-caption">Number of Employees</div>
+          <div class="text-body-1">{{ selectedRemittance.total_employees }}</div>
         </v-col>
-        <v-col cols="6">
+        <v-col cols="6" sm="4">
           <div class="text-caption">CRA Reference</div>
           <div class="text-body-1">
             <v-chip v-if="selectedRemittance.cra_report_reference" size="small" color="success">
@@ -175,6 +177,10 @@
             </v-chip>
             <span v-else class="text-grey">Not provided</span>
           </div>
+        </v-col>
+        <v-col cols="6" sm="4">
+          <div class="text-caption">Generated</div>
+          <div class="text-body-1">{{ formatDateTime(selectedRemittance.generated_at) }}</div>
         </v-col>
       </v-row>
 

@@ -340,7 +340,7 @@ import { useAppStore } from '@/stores/app'
 import { payrollApi, reportsApi, registryApi, employeeApi } from '@/services/api'
 import { getErrorMessage } from '@/utils/error'
 import type { T4SlipLegacy as T4Slip, T4SummaryData } from '@/types/t4'
-import { save } from '@tauri-apps/api/dialog'
+import { save } from '@tauri-apps/plugin-dialog'
 import T4AdjustmentForm from '@/components/forms/T4AdjustmentForm.vue'
 import TransmitterForm from '@/components/forms/TransmitterForm.vue'
 
@@ -408,12 +408,12 @@ const slipHeaders = computed(() => {
     { title: 'Earnings', key: 'employment_income', align: 'end' as const }
   ]
   // if (xlAndUp.value) {
-    headers.push(
-      { title: 'CPP', key: 'cpp_contributions', align: 'end' as const },
-      { title: 'CPP2', key: 'cpp2_contributions', align: 'end' as const },
-      { title: 'EI', key: 'ei_premiums', align: 'end' as const },
-      // { title: 'Box 22', key: 'income_tax_deducted', align: 'end' as const }
-    )
+  headers.push(
+    { title: 'CPP', key: 'cpp_contributions', align: 'end' as const },
+    { title: 'CPP2', key: 'cpp2_contributions', align: 'end' as const },
+    { title: 'EI', key: 'ei_premiums', align: 'end' as const },
+    // { title: 'Box 22', key: 'income_tax_deducted', align: 'end' as const }
+  )
   // }
   if (lgAndUp.value) {
     headers.push(

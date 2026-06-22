@@ -154,7 +154,12 @@ pub async fn generate_history_payroll_report(
             }
         }
 
-        let filename = format!("payroll_history_{}_{}_{}.pdf",
+        // Use the employee number from the first employee to make filename unique per employee
+        let emp_number = employees.first()
+            .map(|e| e.employee_number.as_str())
+            .unwrap_or("unknown");
+        let filename = format!("history_{}_{}_{}_{}.pdf",
+            emp_number,
             pay_date.format("%Y%m%d"),
             period_start.format("%m%d"),
             period_end.format("%m%d")

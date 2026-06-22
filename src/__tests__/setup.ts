@@ -1,21 +1,23 @@
 import { vi } from 'vitest'
 
 // Mock Tauri API
-vi.mock('@tauri-apps/api/tauri', () => ({
+vi.mock('@tauri-apps/api/core', () => ({
   invoke: vi.fn(),
 }))
 
-vi.mock('@tauri-apps/api/dialog', () => ({
+vi.mock('@tauri-apps/plugin-dialog', () => ({
   save: vi.fn(),
   open: vi.fn(),
 }))
 
-// Mock @mdi/font
+// Mock CSS imports that Vuetify and other components use
+vi.mock('vuetify/styles', () => ({})); // eslint-disable-line
 vi.mock('@mdi/font/css/materialdesignicons.css', () => ({})); // eslint-disable-line
 
 // Global test utilities
-(globalThis as any).ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}))
+class MockResizeObserver {
+  observe = vi.fn()
+  unobserve = vi.fn()
+  disconnect = vi.fn()
+}
+;(globalThis as any).ResizeObserver = MockResizeObserver

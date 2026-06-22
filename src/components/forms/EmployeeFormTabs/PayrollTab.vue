@@ -17,14 +17,12 @@
     <v-row>
       <!-- SIN -->
       <v-col cols="6" sm="4" md="3">
-        <v-text-field v-model="formData.sin" label="SIN*" :rules="[rules.required, rules.sin]" variant="outlined"
-          density="comfortable" placeholder="XXX-XXX-XXX" />
+        <v-text-field v-model="formData.sin" label="SIN*" :rules="[rules.required, rules.sin]" variant="outlined" density="comfortable" placeholder="XXX-XXX-XXX" />
       </v-col>
 
       <!-- Date of Birth -->
       <v-col cols="6" sm="4" md="3">
-        <v-text-field v-model="formData.date_of_birth" label="Date of Birth*"
-          :rules="[rules.required, rules.date, rules.dateOfBirth]" variant="outlined" density="comfortable" type="date"
+        <v-text-field v-model="formData.date_of_birth" label="Date of Birth*" :rules="[rules.required, rules.date, rules.dateOfBirth]" variant="outlined" density="comfortable" type="date"
           hint="Needed for CPP eligibility (ages 18-70)" persistent-hint />
       </v-col>
     </v-row>
@@ -32,44 +30,38 @@
     <v-row>
       <!-- EI Exemption -->
       <v-col cols="6" sm="4" md="3">
-        <v-switch v-model="formData.ei_exempt" label="EI Exempt" color="primary" density="comfortable"
-          hint="Skip EI deductions" persistent-hint />
+        <v-switch v-model="formData.ei_exempt" label="EI Exempt" color="primary" density="comfortable" hint="Skip EI deductions" persistent-hint />
       </v-col>
 
       <!-- CPP Exemption -->
       <v-col cols="6" sm="4" md="3">
-        <v-switch v-model="formData.cpp_exempt" label="CPP Exempt" color="primary" density="comfortable"
-          hint="Skip CPP deductions" persistent-hint />
+        <v-switch v-model="formData.cpp_exempt" label="CPP Exempt" color="primary" density="comfortable" hint="Skip CPP deductions" persistent-hint />
       </v-col>
     </v-row>
 
     <v-row>
       <!-- Pay Type -->
       <v-col cols="6" sm="4" md="3">
-        <v-select v-model="formData.pay_type" label="Pay Type*" :items="payTypes" :rules="[rules.required]"
-          variant="outlined" density="comfortable" />
+        <v-select v-model="formData.pay_type" label="Pay Type*" :items="payTypes" :rules="[rules.required]" variant="outlined" density="comfortable" />
       </v-col>
 
       <!-- Pay Rate -->
       <v-col cols="6" sm="4" md="3">
-        <v-text-field v-model.number="formData.pay_rate" label="Pay Rate*"
-          :rules="[rules.required, rules.positiveNumber]" variant="outlined" density="comfortable" type="number"
-          step="0.01" :prefix="formData.pay_type === 'Hourly' ? '$' : ''"
+        <v-text-field v-model.number="formData.pay_rate" label="Pay Rate*" :rules="[rules.required, rules.positiveNumber]" variant="outlined" density="comfortable" type="number" step="0.01"
+          :prefix="formData.pay_type === 'Hourly' ? '$' : ''"
           :suffix="formData.pay_type === 'Hourly' ? '/hour' : formData.pay_type === 'Weekly' ? '/week' : formData.pay_type === 'Monthly' ? '/month' : '/year'" />
       </v-col>
 
       <!-- Vacation Pay Rate -->
       <v-col cols="6" sm="4" md="3">
-        <v-text-field v-model.number="vacationPayRateDisplay" label="Vacation Pay Rate*"
-          :rules="[rules.required, rules.vacationRate]" variant="outlined" density="comfortable" type="number"
-          step="0.1" suffix="%" hint="e.g., 4 for 4%, 6 for 6%" persistent-hint />
+        <v-text-field v-model.number="vacationPayRateDisplay" label="Vacation Pay Rate*" :rules="[rules.required, rules.vacationRate]" variant="outlined" density="comfortable" type="number" step="0.1"
+          suffix="%" hint="e.g., 4 for 4%, 6 for 6%" persistent-hint />
       </v-col>
 
       <!-- Overtime Multiplier -->
       <v-col cols="6" sm="4" md="3">
-        <v-text-field v-model.number="formData.overtime_multiplier" label="Overtime Multiplier*"
-          :rules="[rules.required, rules.overtimeMultiplier]" variant="outlined" density="comfortable" type="number"
-          step="0.1" suffix="x" hint="Typically 1.5x" persistent-hint />
+        <v-text-field v-model.number="formData.overtime_multiplier" label="Overtime Multiplier*" :rules="[rules.required, rules.overtimeMultiplier]" variant="outlined" density="comfortable"
+          type="number" step="0.1" suffix="x" hint="Typically 1.5x" persistent-hint />
       </v-col>
     </v-row>
 
@@ -84,23 +76,18 @@
             <!-- Province of Employment and Year -->
             <v-row>
               <v-col cols="6" sm="4" md="3">
-                <v-select v-model="taxYear" label="Tax Year*" :items="availableYears" :rules="[rules.required]"
-                  variant="outlined" density="comfortable" />
+                <v-select v-model="taxYear" label="Tax Year*" :items="availableYears" :rules="[rules.required]" variant="outlined" density="comfortable" />
               </v-col>
               <v-col cols="6" sm="4" md="3">
-                <v-select v-model="taxProvince" label="Tax Province*" :items="provinces" :rules="[rules.required]"
-                  variant="outlined" density="comfortable" />
+                <v-select v-model="taxProvince" label="Tax Province*" :items="provinces" :rules="[rules.required]" variant="outlined" density="comfortable" />
               </v-col>
               <v-col cols="6" sm="4" md="3">
-                <v-text-field v-model.number="personalAmount.federal_amount" label="Federal Amount*" type="number"
-                  step="0.01" prefix="$" :rules="[rules.required, rules.positiveNumber]" variant="outlined"
-                  density="comfortable" :hint="`Default: $${basicAmounts.federal_amount.toFixed(0)}`" persistent-hint />
+                <v-text-field v-model.number="personalAmount.federal_amount" label="Federal Amount*" type="number" step="0.01" prefix="$" :rules="[rules.required, rules.positiveNumber]"
+                  variant="outlined" density="comfortable" :hint="`Default: $${basicAmounts.federal_amount.toFixed(0)}`" persistent-hint />
               </v-col>
               <v-col cols="6" sm="4" md="3">
-                <v-text-field v-model.number="personalAmount.provincial_amount" label="Provincial Amount*" type="number"
-                  step="0.01" prefix="$" :rules="[rules.required, rules.positiveNumber]" variant="outlined"
-                  density="comfortable" :hint="`Default: $${basicAmounts.provincial_amount.toFixed(0)}`"
-                  persistent-hint />
+                <v-text-field v-model.number="personalAmount.provincial_amount" label="Provincial Amount*" type="number" step="0.01" prefix="$" :rules="[rules.required, rules.positiveNumber]"
+                  variant="outlined" density="comfortable" :hint="`Default: $${basicAmounts.provincial_amount.toFixed(0)}`" persistent-hint />
               </v-col>
             </v-row>
           </v-card-text>
@@ -110,8 +97,7 @@
             <v-btn @click="loadDefaultBasicAmounts" :loading="loadingPersonal" variant="outlined">
               Load Default
             </v-btn>
-            <v-btn @click="indexFromPrevious" :loading="loadingPersonal" :disabled="!canIndexFromPrevious"
-              variant="outlined">
+            <v-btn @click="indexFromPrevious" :loading="loadingPersonal" :disabled="!canIndexFromPrevious" variant="outlined">
               Index from Previous
             </v-btn>
           </v-card-actions>
@@ -129,17 +115,15 @@
           <v-card-text>
             <v-row>
               <v-col cols="6" sm="4" md="3">
-                <v-select v-model="newAutofill.autofill_type" label="Type*" :items="autofillTypes" :rules="[rules.required]"
-                  variant="outlined" density="comfortable" />
+                <v-select v-model="newAutofill.autofill_type" label="Type*" :items="autofillTypes" :rules="[rules.required]" variant="outlined" density="comfortable" />
               </v-col>
               <v-col cols="6" sm="4" md="3">
-                <v-autocomplete v-model="newAutofill.type_name" label="Name*" :rules="[rules.required]"
-                  :items="availableTypeNames" variant="outlined" density="comfortable" clearable
+                <v-autocomplete v-model="newAutofill.type_name" label="Name*" :rules="[rules.required]" :items="availableTypeNames" variant="outlined" density="comfortable" clearable
                   placeholder="Select or type a name" />
               </v-col>
               <v-col cols="6" sm="4" md="3">
-                <v-text-field v-model.number="newAutofill.amount" label="Amount*" type="number" step="0.01" prefix="$"
-                  :rules="[rules.required, rules.positiveNumber]" variant="outlined" density="comfortable" />
+                <v-text-field v-model.number="newAutofill.amount" label="Amount*" type="number" step="0.01" prefix="$" :rules="[rules.required, rules.positiveNumber]" variant="outlined"
+                  density="comfortable" />
               </v-col>
               <v-col cols="6" sm="4" md="3" class="d-flex align-center">
                 <v-btn @click="addAutofill" color="primary" variant="outlined" :disabled="!canAddAutofill">
@@ -161,20 +145,17 @@
               <tbody>
                 <tr v-for="(entry, index) in autofillEntries" :key="(entry as any).id ?? (entry as any).tempId ?? index">
                   <td>
-                    <v-select v-model="entry.autofill_type" :items="autofillTypes" density="compact" variant="plain"
-                      hide-details @update:model-value="updateAutofill(entry)" />
+                    <v-select v-model="entry.autofill_type" :items="autofillTypes" density="compact" variant="plain" hide-details @update:model-value="updateAutofill(entry)" />
                   </td>
                   <td>
-                    <v-autocomplete v-model="entry.type_name" :items="getAvailableNamesForEntry(entry)" density="compact"
-                      variant="plain" hide-details clearable @update:model-value="updateAutofill(entry)" />
+                    <v-autocomplete v-model="entry.type_name" :items="getAvailableNamesForEntry(entry)" density="compact" variant="plain" hide-details clearable
+                      @update:model-value="updateAutofill(entry)" />
                   </td>
                   <td>
-                    <v-text-field v-model.number="entry.amount" type="number" step="0.01" prefix="$" density="compact"
-                      variant="plain" hide-details @update:model-value="updateAutofill(entry)" />
+                    <v-text-field v-model.number="entry.amount" type="number" step="0.01" prefix="$" density="compact" variant="plain" hide-details @update:model-value="updateAutofill(entry)" />
                   </td>
                   <td>
-                    <v-switch v-model="entry.is_active" color="primary" density="compact" hide-details
-                      @change="updateAutofill(entry)" />
+                    <v-switch v-model="entry.is_active" color="primary" density="compact" hide-details @change="updateAutofill(entry)" />
                   </td>
                   <td>
                     <v-btn icon="mdi-delete" size="x-small" variant="text" color="error" @click="deleteAutofill((entry as any).id ?? (entry as any).tempId)" />
@@ -496,9 +477,9 @@ const getAvailableNamesForEntry = (entry: EmployeeAutofill) => {
 
 const canAddAutofill = computed(() => {
   return newAutofill.value.type_name &&
-         newAutofill.value.type_name.trim() !== '' &&
-         (newAutofill.value.amount || 0) >= 0 &&
-         newAutofill.value.autofill_type
+    newAutofill.value.type_name.trim() !== '' &&
+    (newAutofill.value.amount || 0) >= 0 &&
+    newAutofill.value.autofill_type
 })
 
 const loadAutofills = async () => {

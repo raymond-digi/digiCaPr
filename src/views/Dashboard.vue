@@ -63,6 +63,11 @@
                 </v-btn>
               </v-col>
               <v-col cols="12" md="3">
+                <v-btn block color="warning" prepend-icon="mdi-bank-transfer" @click="$router.push('/remittance')">
+                  Remittance
+                </v-btn>
+              </v-col>
+              <v-col cols="12" md="3">
                 <v-btn block color="secondary" prepend-icon="mdi-cog" @click="$router.push('/settings')">
                   Settings
                 </v-btn>

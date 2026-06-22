@@ -429,7 +429,7 @@ import { formatDateLocal, toDateString } from '@/utils/date'
 import type { Payroll, CurrentPayrollInput } from '@/types/payroll'
 import type { Employee } from '@/types/employee'
 import PayrollForm from '@/components/forms/PayrollForm.vue'
-import { save, open } from '@tauri-apps/api/dialog'
+import { save, open } from '@tauri-apps/plugin-dialog'
 
 const currentStore = useCurrentPayrollStore()
 const employeeStore = useEmployeeStore()

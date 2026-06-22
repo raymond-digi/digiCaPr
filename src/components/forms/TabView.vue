@@ -1,11 +1,6 @@
 <template>
   <v-card flat class="tab-card">
-    <v-tabs
-      v-model="activeTab"
-      color="primary"
-      grow
-      class="tab-nav"
-    >
+    <v-tabs v-model="activeTab" color="primary" grow class="tab-nav">
       <v-tab value="personal">
         <v-icon v-if="tabStatus?.personal === 'valid'" size="small" color="success" class="mr-1">mdi-check-circle</v-icon>
         <v-icon v-else-if="tabStatus?.personal === 'invalid'" size="small" color="error" class="mr-1">mdi-alert-circle</v-icon>

@@ -9,7 +9,7 @@
             <v-checkbox v-model="showOnlyCurrentlyEmployed" label="Employed" density="compact" hide-details class="mr-4" />
             <v-text-field v-model="search" density="compact" prepend-inner-icon="mdi-magnify" label="Search" single-line hide-details variant="outlined" class="mr-4" style="max-width: 300px" />
           </v-card-title>
-          
+
           <!-- Import Errors Display -->
           <v-alert v-if="importErrors && importErrors.length > 0" type="warning" variant="tonal" class="mb-4">
             <div class="font-weight-bold mb-2">{{ importErrors.length }} Error(s) occurred:</div>
@@ -92,7 +92,7 @@ import { useEmployeeStore } from '@/stores/employee'
 import { useAppStore } from '@/stores/app'
 import type { Employee } from '@/types/employee'
 import EmployeeForm from '@/components/forms/EmployeeForm.vue'
-import { save, open } from '@tauri-apps/api/dialog'
+import { save, open } from '@tauri-apps/plugin-dialog'
 import { getErrorMessage } from '@/utils/error'
 
 const employeeStore = useEmployeeStore()
@@ -183,7 +183,7 @@ const exportCsv = async () => {
         extensions: ['csv']
       }]
     })
-    
+
     if (filePath) {
       exporting.value = true
       const count = await employeeStore.exportEmployeesCsv(filePath)
@@ -197,33 +197,33 @@ const exportCsv = async () => {
 }
 
 const importCsv = async () => {
-   try {
-     const filePath = await open({
-       multiple: false,
-       filters: [{
-         name: 'CSV',
-         extensions: ['csv']
-       }]
-     })
-     
-     if (filePath && typeof filePath === 'string') {
-       importing.value = true
-       const result = await employeeStore.importEmployeesCsv(filePath)
-       importErrors.value = result.errors
-       let message = `Imported ${result.imported} employees`
-       if (result.skipped > 0) {
-         message += `, skipped ${result.skipped}`
-       }
-       if (result.errors.length > 0) {
-         message += ` with ${result.errors.length} errors`
-         console.error('Import errors:', result.errors)
-       }
-       appStore.showNotification(message, result.errors.length > 0 ? 'warning' : 'success')
-     }
-   } catch (error) {
-     appStore.showNotification(`Failed to import CSV: ${getErrorMessage(error)}`, 'error')
-   } finally {
-     importing.value = false
-   }
- }
+  try {
+    const filePath = await open({
+      multiple: false,
+      filters: [{
+        name: 'CSV',
+        extensions: ['csv']
+      }]
+    })
+
+    if (filePath && typeof filePath === 'string') {
+      importing.value = true
+      const result = await employeeStore.importEmployeesCsv(filePath)
+      importErrors.value = result.errors
+      let message = `Imported ${result.imported} employees`
+      if (result.skipped > 0) {
+        message += `, skipped ${result.skipped}`
+      }
+      if (result.errors.length > 0) {
+        message += ` with ${result.errors.length} errors`
+        console.error('Import errors:', result.errors)
+      }
+      appStore.showNotification(message, result.errors.length > 0 ? 'warning' : 'success')
+    }
+  } catch (error) {
+    appStore.showNotification(`Failed to import CSV: ${getErrorMessage(error)}`, 'error')
+  } finally {
+    importing.value = false
+  }
+}
 </script>
