@@ -1,6 +1,6 @@
 [package]
 name = "canadian-payroll"
-version = "26.7.2"
+version = "26.7.3"
 description = "Digi Canadian Payroll App"
 authors = ["CPR Team"]
 license = ""
