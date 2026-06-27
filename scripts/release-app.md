@@ -23,15 +23,15 @@ flowchart TD
 **1. Run the release script with a version bump type:**
 
 ```bash
-node scripts/release.js --bump patch    # e.g., 26.8.0 → 26.8.1
-node scripts/release.js --bump minor    # e.g., 26.8.0 → 26.9.0
-node scripts/release.js --bump major    # e.g., 26.8.0 → 27.0.0
+node scripts/release-app.js --bump patch    # e.g., 26.8.0 → 26.8.1
+node scripts/release-app.js --bump minor    # e.g., 26.8.0 → 26.9.0
+node scripts/release-app.js --bump major    # e.g., 26.8.0 → 27.0.0
 ```
 
 Or specify an exact version:
 
 ```bash
-node scripts/release.js --version "26.8.0"
+node scripts/release-app.js --version "26.8.0"
 ```
 
 **Note:** On Windows, use direct `node` execution rather than `npm run` scripts.
@@ -112,7 +112,7 @@ git push origin v26.8.0
 
 | Aspect | Config Release | App Release |
 |--------|---------------|-------------|
-| **Script** | `release-config.js` | `release.js` |
+| **Script** | `release-config.js` | `release-app.js` |
 | **Tag Pattern** | `config-YYYY` | `vX.Y.Z` |
 | **What changes** | Tax rate JSON files | Code + config |
 | **Triggers CI** | Config release workflow | App release workflow |

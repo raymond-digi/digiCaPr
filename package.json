@@ -1,6 +1,6 @@
 {
   "name": "canadian-payroll",
-  "version": "26.7.3",
+  "version": "26.7.4",
   "description": "Digi Canadian Payroll App",
   "type": "module",
   "scripts": {
